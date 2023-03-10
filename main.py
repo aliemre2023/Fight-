@@ -1,190 +1,139 @@
-from random import randint
+import pandas as pd
+from openpyxl import load_workbook, Workbook
 
-def attack(attacker,defancer):
-    damage = attacker["Atk"] - defancer["Def"]
-    defancer["HP"] -= damage
+data = pd.read_excel("characters.xlsx")
+pd.options.mode.chained_assignment = None
+
+
+# Functions
+def attack(attacker, defancer):
+    damage = data["Atk"][attacker] - data["Def"][defancer]
+    data["HP"][defancer] -= damage
+    print("{0} -> {1} || Damage: {2}, {3}'s new HP: {4}\n"
+          .format(data["Chars"][attacker], 
+                  data["Chars"][defancer], 
+                  damage, 
+                  data["Chars"][defancer], 
+                  data["HP"][defancer]))
+    
+def heal(attacker):
+    data["HP"][attacker] += 25*round
+    print("{0}'s new HP: {1}\n"
+          .format(data["Chars"][attacker],
+                  data["HP"][attacker]))
 
 def attackBoost(attacker):
-    attacker["Atk"] += 15*round
-
-def heal(attacker):
-    attacker["HP"] += 25*round
-
-def chanceAttack(attacker,defancer):
-    damage = attacker["Atk"]+randint(-20,25)*round - defancer["Def"]
-    defancer["HP"] -= damage
-
-def defanceIncreaseing(attacker):
-    attacker["Def"] += 10*round
-
-def fiftyFifty(attacker,defancer):
-    attacker["Atk"] = attacker["Atk"]/2
-    defancer["HP"] = defancer["HP"]/2
-
-def nuclearPunch(attacker,defancer):
-    attacker["Atk"] = attacker["Atk"]*3/4
-    attacker["HP"] = attacker["HP"]*3/5
-    defancer["Atk"] = defancer["Atk"]*4/3
-    defancer["HP"] = defancer["HP"]/2
+    data["Atk"][attacker] += 15*round
+    print("{0}'s new Atk: {1}\n"
+          .format(data["Chars"][attacker],
+                  data["Atk"][attacker]))
 
 
-characters = {
-    "a1": {"HP":100, "Atk":13, "Def":3},
-    "a2": {"HP":120, "Atk":8, "Def":6}
-    }
+round = 0
 
-
+# Program Start
 while True:
-    print("""
-    q- çıkış
-    1- savaş
-    2- karakter ekle
-    """)
-    sec = input(" >>")
+    print("_" * 30)
+    view = int(input("-- Main Page --\n1- Play!\n2- Add Character\n3- Quit\nChoose-- "))
+
+    # Play!
+    if view == 1:
+        print("_" * 30)
+        
+
+        print(data["Chars"])
+
+        player1 = int(input("\n(1. Player) Choose your character number! - "))
+        print(data["Chars"][player1])
 
 
+        player2 = int(input("(2. Player) Choose your character number! - "))
+        print(data["Chars"][player2])
 
-    if sec == "1":
-
-        for key, value in characters.items():
-            print(key, " : ", value)
-
-        print("!! İsminiz istediğiniz isim olabilir. \n"
-              "!! Karakter seçiminde sistemdeki karekterlerden birini seçmelisiniz(örn: a1)")
-        isim1, man1 = input("isim seçin:"),characters[input("karaker seçin:")]
-        isim2, man2 = input("isim seçin:"),characters[input("karakter seçin:")]
-
-        round = 0
-
-        while True:
+        print("_" * 30)
+        print("-- Game Starting --")
+        
+        # Game Start
+        while True:    
             round += 1
 
+            print("_" * 30,"\n-- Choosing -- round: {0}\n1- Attack\n2- Heal\n3- Attack Boost\n".format(round))
+
+            # Player 1
             while True:
-                print("/"*50)
-                print("Round bonus:", round)
-                print("-------",isim1,"-------")
-                print("""
-        1 - Attack
-        2 - Attack Boost
-        3 - Heal
-        4 - Chance Attack
-        5 - Defance Increasing
-        6 - Fifty Fifty
-        7 - Nuclear Punch
-                    """)
-                inp = input("   >> ")
+                mode = int(input("Choose a mode! (1)- "))
 
-                if inp == "1":
-                    attack(man1,man2)
-                    print(isim1,man1["Atk"]-man2["Def"],"vuruş -->",isim2)
+                if mode == 1: 
+                    attack(player1, player2)
                     break
-                elif inp == "2":
-                    attackBoost(man1)
-                    print(isim1,"güç artışı -->",man1["Atk"])
+                elif mode == 2:
+                    heal(player1)
                     break
-                elif inp == "3":
-                    heal(man1)
-                    print(isim1,"can artışı -->",man1["HP"])
+                elif mode == 3:
+                    attackBoost(player1)
                     break
-                elif inp == "4":
-                    oldHP = man2["HP"]
-                    chanceAttack(man1,man2)
-                    newHP = man2["HP"]
-                    print(isim1,oldHP-newHP,"şans vuruşu -->",isim2)
-                    break
-                elif inp == "5":
-                    defanceIncreaseing(man1)
-                    print(isim1,"defans artışı -->",man1["Def"])
-                    break
-                elif inp == "6":
-                    fiftyFifty(man1,man2)
-                    print("Hammurabi döneminde mi yaşıyoruz abi.")
-                    break
-                elif inp == "7":
-                    nuclearPunch(man1,man2)
-                    print("Bu ne tantana kardeşim!")
-                    break
-
-            if man2["HP"] <= 0 :
-                print(isim1,"kazandı.")
+                else:
+                    print("invalid number")
+        
+            if data["HP"][player2] <= 0:
+                print("{0} (player1) won the game".format(data["Chars"][player1]))
+                print("_" * 30)
                 break
-            else:
-                print("*******************************\n",isim1,"=", man1, "\n", isim2,"=", man2,"\n*******************************",sep="")
-
-
+            
+            # Player 2
             while True:
-                print("/" * 50)
-                print("Round bouns:",round)
-                print("-------",isim2,"-------")
-                print("""
-            1 - Attack
-            2 - Attack Boost
-            3 - Heal
-            4 - Chance Attack
-            5 - Defance Increasing
-            6 - Fifty Fifty
-            7 - Nuclear Punch
-                    """)
-                inp = input("   >> ")
+                mode = int(input("Choose a mode! (2)- "))
 
-                if inp == "1":
-                    attack(man2,man1)
-                    print(isim2,man2["Atk"]-man1["Def"],"vuruş -->",isim1)
+                if mode == 1:
+                    attack(player2,player1)
                     break
-                elif inp == "2":
-                    attackBoost(man2)
-                    print(isim2,"güç artışı -->",man2["Atk"])
+                elif mode == 2:
+                    heal(player2)
+                    break    
+                elif mode == 3:
+                    attackBoost(player2)
                     break
-                elif inp == "3":
-                    heal(man2)
-                    print(isim2,"can artışı -->",man2["HP"])
-                    break
-                elif inp == "4":
-                    oldHP = man1["HP"]
-                    chanceAttack(man2,man1)
-                    newHP = man1["HP"]
-                    print(isim2,oldHP-newHP,"şans vuruşu -->",isim1)
-                    break
-                elif inp == "5":
-                    defanceIncreaseing(man2)
-                    print(isim2,"defans artışı -->",man2["Def"])
-                    break
-                elif inp == "6":
-                    fiftyFifty(man2,man1)
-                    print("Hammurabi döneminde mi yaşıyoruz abi.")
-                    break
-                elif inp == "7":
-                    nuclearPunch(man2,man1)
-                    print("Bu ne tantana kardeşim!")
-                    break
-
-            if man1["HP"] <= 0:
-                print(isim2,"kazandı.")
+                else:
+                    print("invalid number")
+            
+            if data["HP"][player1] <= 0:
+                print("{0} (player2) won the game".format(data["Chars"][player2]))
+                print("_" * 30)
                 break
-            else:
-                print("*******************************\n",isim1,"=", man1, "\n", isim2,"=", man2,"\n*******************************",sep="")
+            
 
-    elif sec == "2":
 
-        for key, value in characters.items():
-            print(key, " : ", value)
+    # Character Add
+    elif view == 2:
+        print("_" * 30)
+        print("-- Character Adding Screen --")
 
-        print("Karakter Ekleme Ekranı")
-        isim = input("Karakterin ismi:")
-        HP = int(input("Karakterin HP'si:"))
-        Atk = int(input("Karakterin Atttack'ı:"))
-        Def = int(input("Karakterin Defance'sı:"))
+        name = input("Name: ")
+        HP = int(input("HP: "))
+        Atk = int(input("Atk: "))
+        Def = int(input("Def: "))
 
-        characters[isim] = {"HP":HP,"Atk":Atk,"Def":Def}
+        newChar = {"Chars":[name], "HP":[HP], "Atk":[Atk], "Def":[Def]}
+        newData = pd.DataFrame(data=newChar)
 
-        for key, value in characters.items():
-            print(key, " : ", value)
+        data = pd.concat([data, newData], ignore_index=True)
+        data.to_excel("characters.xlsx")
 
-    elif sec == "q":
+        
+        data = pd.read_excel("characters.xlsx", index_col=0)
+        
+
+        print(data[["Chars", "Atk", "HP", "Def"]].to_string(index=False))
+
+        # Excel Arangement
+        wb = load_workbook('characters.xlsx')
+        ws = wb['Sheet1']
+        ws.delete_cols(1)
+        wb.save("characters.xlsx")
+
+
+    # Quit
+    elif view == 3:
+        print("Program closed")
         break
-
-
-
-
-
 
