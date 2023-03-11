@@ -13,3 +13,10 @@ Your new character will be permanently saved in the excel file.
 And if you want to close the program, you should press "3" when you are in the main page.
 
 I hope i coded clearly.
+
+---------
+
+for libraries;
+
+ - <b>pip install pandas==1.5.3</b>
+ - <b>pip install openpyxl==3.0.10</b>
