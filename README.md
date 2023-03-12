@@ -28,6 +28,5 @@ for libraries;
 <img width="224" alt="char_choose" src="https://user-images.githubusercontent.com/93014021/224534236-867a1f03-8fe9-49af-bb41-efc4a259ef6f.png">
 
 <b> Gaming Example</b><br>
-<img width="392" alt="game_1" src="https://user-images.githubusercontent.com/93014021/224534320-9f16d86c-d0d5-4ca3-af23-8f46259077c1.png">
+<img width="392" alt="game_1" src="https://user-images.githubusercontent.com/93014021/224534320-9f16d86c-d0d5-4ca3-af23-8f46259077c1.png"><br>
 <img width="399" alt="game_2" src="https://user-images.githubusercontent.com/93014021/224534323-946a6b3d-14e6-404e-b09f-ced7aad1b169.png">
-
