@@ -1,11 +1,20 @@
 import pandas as pd
 from openpyxl import load_workbook, Workbook
 
+# Characters Import
 data = pd.read_excel("characters.xlsx")
 pd.options.mode.chained_assignment = None
 
 
 # Functions
+def situation():
+    s1 = data.loc[player1]
+    s2 = data.loc[player2]
+    current = pd.concat([s1, s2], axis=1)
+    print("_" * 30)
+    print(current)
+    print("_" * 30) 
+
 def attack(attacker, defancer):
     damage = data["Atk"][attacker] - data["Def"][defancer]
     data["HP"][defancer] -= damage
@@ -29,7 +38,6 @@ def attackBoost(attacker):
                   data["Atk"][attacker]))
 
 
-round = 0
 
 # Program Start
 while True:
@@ -38,32 +46,42 @@ while True:
 
     # Play!
     if view == 1:
-        print("_" * 30)
-        
-
+        print("_" * 30)  
         print(data["Chars"])
 
+        # Character Choosing
         player1 = int(input("\n(1. Player) Choose your character number! - "))
         print(data["Chars"][player1])
 
+        while True:
+            player2 = int(input("(2. Player) Choose your character number! - "))
+            
+            if player1 != player2:
+                print(data["Chars"][player2])
+                break
+            else:
+                print("Charaters cannot be same")
 
-        player2 = int(input("(2. Player) Choose your character number! - "))
-        print(data["Chars"][player2])
 
         print("_" * 30)
         print("-- Game Starting --")
         
         # Game Start
+        round = 0
         while True:    
             round += 1
 
-            print("_" * 30,"\n-- Choosing -- round: {0}\n1- Attack\n2- Heal\n3- Attack Boost\n".format(round))
+            print("_" * 30, "\n-- Choosing -- round: {0}".format(round))
+            print("0- Current Situation (not progress)\n1- Attack\n2- Heal\n3- Attack Boost\n")
 
             # Player 1
             while True:
-                mode = int(input("Choose a mode! (1)- "))
+                print("({0}) Choose a mode! - ".format(data["Chars"][player1]), end="")
+                mode = int(input(""))
 
-                if mode == 1: 
+                if mode == 0:
+                    situation()
+                elif mode == 1: 
                     attack(player1, player2)
                     break
                 elif mode == 2:
@@ -76,15 +94,18 @@ while True:
                     print("invalid number")
         
             if data["HP"][player2] <= 0:
-                print("{0} (player1) won the game".format(data["Chars"][player1]))
+                print("{0} won the game".format(data["Chars"][player1]))
                 print("_" * 30)
                 break
             
             # Player 2
             while True:
-                mode = int(input("Choose a mode! (2)- "))
+                print("({0}) Choose a mode! - ".format(data["Chars"][player2]), end="")
+                mode = int(input(""))
 
-                if mode == 1:
+                if mode == 0:
+                    situation()
+                elif mode == 1:
                     attack(player2,player1)
                     break
                 elif mode == 2:
@@ -97,7 +118,7 @@ while True:
                     print("invalid number")
             
             if data["HP"][player1] <= 0:
-                print("{0} (player2) won the game".format(data["Chars"][player2]))
+                print("{0} won the game".format(data["Chars"][player2]))
                 print("_" * 30)
                 break
             
@@ -132,8 +153,8 @@ while True:
         wb.save("characters.xlsx")
 
 
+
     # Quit
     elif view == 3:
         print("Program closed")
         break
-
